@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # Configurações do broker MQTT
-BROKER_ADDRESS = "{your address}"  # Altere para o endereço do seu broker
+BROKER_ADDRESS = ""  # Altere para o endereço do seu broker
 BROKER_PORT = 8883  # Porta padrão para conexões seguras com TLS
 CA_CERTIFICATE = "emqxsl-ca.crt"  # Caminho para o certificado CA
 TOPIC_SUBSCRIBE = "/device/#"  # Tópico para assinar (receber mensagens)
