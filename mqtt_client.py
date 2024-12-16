@@ -105,6 +105,44 @@ def on_closing():
 def atualizar_grafico_thread_safe():
     root.after(0, atualizar_grafico)  # Garante que a atualização ocorrerá na thread principal
 
+def abrir_janela_inserir_valor():
+    """Abre uma janela para inserir um valor float."""
+    # Cria uma nova janela (Toplevel)
+    janela_inserir = tk.Toplevel(root)
+    janela_inserir.title("Inserir Valor")
+    janela_inserir.geometry("300x200")
+
+    # Label para instrução
+    label = tk.Label(janela_inserir, text="Insira um valor (float):")
+    label.pack(pady=10)
+
+    # Entry para inserir o valor
+    entrada_valor = tk.Entry(janela_inserir)
+    entrada_valor.pack(pady=10)
+
+    # Função para processar o valor inserido
+    def atualiza_valor():
+        novo_valor = entrada_valor.get()
+        try:
+            # Converte o valor para float
+            valor_float = float(novo_valor)
+            config_dict["valor"] = valor_float  # Atualiza o dicionário local
+            
+            # Salva no arquivo config.json
+            with open('config.json', 'w') as file:
+                json.dump(config_dict, file, indent=4)
+
+            print(f"Valor inserido: {valor_float}")  # Você pode processar o valor aqui
+            janela_inserir.destroy()  # Fecha a janela após a confirmação
+        except ValueError:
+            tk.messagebox.showerror("Erro", "Por favor, insira um número válido.")
+
+    # Botão para confirmar o valor
+    botao_confirmar = tk.Button(janela_inserir, text="Confirmar", command=atualiza_valor)
+    botao_confirmar.pack(pady=10)
+    
+    atualizar_grafico()
+
 def atualizar_grafico():
     global flag
     # Limpa o canvas para evitar sobreposição
@@ -140,12 +178,14 @@ def atualizar_grafico():
         
         # Cria um canvas para desenhar o quadrado
         canvas_quadrado = tk.Canvas(frame_canvas, width=150, height=150)
-        canvas_quadrado.pack(side=tk.BOTTOM, padx=10, pady=10)
+        canvas_quadrado.pack(side=tk.LEFT, padx=10, pady=10)
         # Desenha o quadrado
         canvas_quadrado.create_rectangle(20, 20, 80, 80, fill=cor_quadrado, outline="")
 
         # Adiciona o texto acima ou ao lado do quadrado
         canvas_quadrado.create_text(70, 100, text=texto_legenda, fill="black", font=("Arial", 12), anchor="n")
+
+
 
 def main():
     global root, frame_canvas  # Declarando as variáveis globais
@@ -162,6 +202,9 @@ def main():
     frame_canvas = tk.Frame(root)
     frame_canvas.pack(fill=tk.BOTH, expand=True)
 
+    # Botão para abrir a janela de inserir valor
+    botao_inserir_valor = tk.Button(root, text="Inserir Valor", command=abrir_janela_inserir_valor)
+    botao_inserir_valor.pack(side=tk.RIGHT, padx=2)
 
     # Exibir o gráfico pela primeira vez
     atualizar_grafico()

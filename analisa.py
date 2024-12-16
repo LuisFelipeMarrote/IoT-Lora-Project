@@ -5,26 +5,26 @@ from datetime import datetime
 
 # Nome do arquivo CSV
 arquivo_csv = 'dados.csv'
+config_dict = None
 
-try:
-    with open('config.json') as file:
-        config_dict = json.load(file)
+def atualiza_config():
+    global config_dict
+    try:
+        with open('config.json') as file:
+            config_dict = json.load(file)
 
-except Exception as e:
-    print(f"Não consegui abrir o config \nErro: {e}")
+    except Exception as e:
+        print(f"Não consegui abrir o config \nErro: {e}")    
+
+
 
 
 def temperatura_desejada():
-    media = 0
-    count = 0
-    for valores in config_dict["valores"]:
-        for valor in valores.values():
-            count = count + 1
-            media = media + float(valor)
-    return media/count
+    return float(config_dict["valor"])
 
 #Recebe uma lista de dic e itera sobre até achar
 def payload_parser(json_list):
+    atualiza_config()
     for item in json_list:
         if 'u' in item:
             if (item['u'] == config_dict["unidade"]):
@@ -38,7 +38,7 @@ def decisão(item):
         return None    
 
     salvarArquivo(item)
-
+    
     if item['v'] < temperatura_desejada(): 
         return "/ligar"
     else:

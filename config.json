@@ -1,11 +1,5 @@
 {
     "nome": "Temperatura",
     "unidade": "Cel",
-    "valores": [
-    {
-        "1":"30",
-        "2":"22",
-        "3":"40"
-    }
-    ]
+    "valor": 27.11
 }
