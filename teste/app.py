@@ -75,7 +75,7 @@ def on_message(client, userdata, msg):
                 flag = False
             print("Mandei para o EMQX")
             client.publish(topic, "O esp32 tem que receber")
-            gerar_grafico()
+            # gerar_grafico()
         else:
             client.publish(TOPIC_PUBLISH, "Temperatura não atualizada")
             print(f"Mensagem publicada no tópico {TOPIC_PUBLISH}: Temperatura não atualizada")
@@ -119,14 +119,17 @@ def index():
     # Gera o gráfico ao carregar a página
     gerar_grafico()
     return render_template("index.html", status="Ligado" if flag else "Desligado")
+    
+@app.route("/update_graph")
+def update_graph():
+    gerar_grafico()  # Regenera o gráfico sempre que esta rota for acessada
+    return redirect(url_for('static', filename='graph.png'))
 
 @app.route('/events')
 def events():
-    def generate():
-        while True:
-            yield f"data: {str(flag).lower()}\n\n"  # Envia o valor de flag (true ou false)
+    string = f"data: {str(flag).lower()}\n\n"  # Envia o valor de flag (true ou false)
     
-    return Response(generate(), content_type='text/event-stream')
+    return Response(string, content_type='text/event-stream')
 
 # Inicia o MQTT em uma thread
 threading.Thread(target=iniciar_mqtt, daemon=True).start()

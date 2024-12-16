@@ -15,7 +15,19 @@
             const color = event.data === "true" ? "green" : "red";
             document.getElementById("status-indicator").style.backgroundColor = color;
             document.getElementById("status-text").innerText = `Status: ${status}`;
+            // Atualiza o gráfico sempre que a mensagem de status for recebida
+            atualizarGrafico(); // Chama a função que faz o update da imagem do gráfico
         };
+
+        // Função para atualizar a imagem do gráfico
+        function atualizarGrafico() {
+            // Faz uma requisição AJAX para atualizar o gráfico
+            $.get("/update_graph", function() {
+                // Atualiza a imagem do gráfico com um parâmetro único para evitar cache
+                $('#grafico').attr('src', "{{ url_for('static', filename='graph.png') }}?" + new Date().getTime());
+            });
+        }
+
     </script>
     <style>
         #status-indicator {
@@ -45,13 +57,5 @@
         <input type="number" step="0.01" id="valor" name="valor" required>
         <button type="submit">Atualizar</button>
     </form>
-
-    <script>
-        // Função para atualizar a imagem do gráfico a cada 5 segundos
-        setInterval(function() {
-            // Adiciona um parâmetro único à URL para evitar cache do navegador
-            $('#grafico').attr('src', "{{ url_for('static', filename='graph.png') }}?" + new Date().getTime());
-        }, 1000); // Atualiza a cada 5 segundos
-    </script>
 </body>
 </html>
